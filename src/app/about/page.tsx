@@ -8,21 +8,23 @@ export default function AboutPage() {
           About
         </h1>
         <p className="mt-6 text-foreground/70">
-          Setting up a multi-tenant SaaS backend and its admin frontend
-          properly takes a team weeks or months — auth, RBAC, tenant
-          isolation, an admin UI that doesn&apos;t look hand-rolled. Most of
-          that work is the same every time.
+          A warehouse tool, a logistics platform, a hotel system, an
+          internal analytics dashboard — completely different products, and
+          the first few months of each one are nearly identical. Sign-in,
+          roles and permissions, keeping one customer&apos;s data away from
+          another&apos;s, an admin interface that doesn&apos;t look
+          hand-rolled. None of it is the thing you set out to build.
         </p>
         <p className="mt-4 text-foreground/70">
-          TheBlueprintCode is a free, MIT-licensed set of template components
-          that does that groundwork once, well, so a team starts from a real
-          foundation instead of a blank repo. Engine and UI Frame are the
-          first two; more are planned as the need comes up.
+          TheBlueprintCode does that groundwork once, properly, and gives it
+          away under MIT. Engine is the backend, UI Frame is the admin
+          dashboard, and what you build on top of them is entirely yours —
+          the foundation makes no assumptions about your industry. More parts
+          are planned as the need comes up.
         </p>
         <p className="mt-4 text-foreground/70">
-          Everything is open source. Contributions — new SSO providers,
-          billing adapters, storage adapters — are welcome; see each
-          repo&apos;s README for exactly where help is wanted.
+          Everything is open source, and contributions are welcome — each
+          repo&apos;s README says exactly where help is wanted.
         </p>
 
         <div className="mt-10 border-t border-border pt-8">
@@ -30,10 +32,10 @@ export default function AboutPage() {
             Questions, or want to contribute?
           </p>
           <a
-            href="mailto:support@theblueprintcode.com"
+            href="https://github.com/theblueprintcode/engine/issues"
             className="mt-1 inline-block font-medium text-accent hover:underline"
           >
-            support@theblueprintcode.com
+            Open an issue on GitHub
           </a>
         </div>
       </Reveal>

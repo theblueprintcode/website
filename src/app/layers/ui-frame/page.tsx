@@ -10,7 +10,7 @@ import { ProductFrame } from "@/components/product-frame";
 export const metadata: Metadata = {
   title: "UI Frame — TheBlueprintCode",
   description:
-    "The admin layer: Next.js and shadcn/ui on Base UI, with a swappable theme and font system, wired to the Engine API.",
+    "The admin dashboard: Next.js and shadcn/ui on Base UI, with a swappable theme and font system, wired to the Engine API.",
 };
 
 const SPEC = [
@@ -32,7 +32,7 @@ const FEATURES = [
   },
   {
     icon: Palette,
-    title: "Themes and fonts, swappable",
+    title: "It can look like your product",
     body: "A real multi-theme, multi-font system rather than one locked palette. Change the preset and every component follows.",
   },
   {
@@ -54,7 +54,7 @@ export default function UiFramePage() {
         index="02"
         name="UI Frame"
         role="admin"
-        summary="The admin layer. Next.js and shadcn/ui on Base UI primitives, with a swappable theme and font system, talking to the Engine API."
+        summary="The admin dashboard. Next.js and shadcn/ui on Base UI primitives, with a swappable theme and font system, talking to the Engine API."
         docsHref="/docs/ui-frame"
         repoHref="https://github.com/theblueprintcode/uiframe"
       />
@@ -192,7 +192,7 @@ export default function UiFramePage() {
                 Previous layer
               </span>
               <span className="mt-1.5 block text-xl font-medium tracking-tight">
-                Engine — the API and tenant layer
+                Engine — the backend layer
               </span>
             </span>
           </Link>

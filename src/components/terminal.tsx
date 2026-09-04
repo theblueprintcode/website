@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,7 +29,7 @@ export function Terminal({
   const cmdRef = useRef<HTMLSpanElement>(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     const cmdEl = cmdRef.current;
     if (!el || !cmdEl) return;
@@ -85,6 +86,15 @@ export function Terminal({
 
   return (
     <div ref={ref} className={`bp-code group relative rounded-lg ${className ?? ""}`}>
+      {/* Copy confirmation as a drafting approval stamp rather than a toast. */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute right-3 top-9 z-10 -rotate-[8deg] rounded border border-dashed border-primary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary transition-all duration-200 ${
+          copied ? "scale-100 opacity-100" : "scale-125 opacity-0"
+        }`}
+      >
+        Copied
+      </span>
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
         <span className="font-mono text-[11px] tracking-wider text-foreground/45">{file}</span>
         <button

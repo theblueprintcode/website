@@ -1,11 +1,13 @@
 ---
 title: Engine
-description: The backend layer — NestJS on Fastify, PostgreSQL schema-per-tenant, Drizzle ORM.
+description: The backend layer — NestJS on Fastify, Drizzle ORM, one PostgreSQL schema per customer.
 ---
 
-Engine is the API and tenant layer. It is a configuration-driven multi-tenant
-backend: clone it, fill in `.env`, define your JSON policies, and you have a
-production-shaped SaaS backend.
+Engine is the backend layer. It is a configuration-driven API server: clone it,
+fill in `.env`, define your JSON policies, and you have a production-shaped
+backend to build your product against. It is multi-tenant internally — each
+customer account gets its own PostgreSQL schema — but it makes no assumptions
+about what your product does.
 
 ## The stack, and why
 

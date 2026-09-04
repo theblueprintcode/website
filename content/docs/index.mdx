@@ -1,27 +1,28 @@
 ---
 title: TheBlueprintCode
-description: One system for building multi-tenant SaaS, released as layers you can fork.
+description: Open-source foundations for any SaaS product, released as layers you can fork.
 ---
 
-TheBlueprintCode is a system for building multi-tenant SaaS applications. It is
-released as **layers** — each one an independent, MIT-licensed template you can
-fork, customise and ship.
+TheBlueprintCode is the foundation under a SaaS product — the auth, roles,
+customer separation and admin interface that every product needs and no product
+is about. What you build on top is up to you: warehouse ops, logistics, hotel
+management, an internal analytics tool.
 
-Two layers are open today. The rest are drawn but not built.
+It is released as **layers** — each one an independent, MIT-licensed template
+you fork, customise and ship.
+
+Each layer stands on its own. Fork the one you need.
 
 ## The layers
 
 | Layer | What it is | Status |
 | --- | --- | --- |
-| **Engine** | The API and tenant layer. NestJS on Fastify, PostgreSQL schema-per-tenant, Drizzle ORM. | Open |
-| **UI Frame** | The admin layer. Next.js and shadcn/ui, wired to the Engine API. | Open |
-| Billing | Subscription and payment adapters over the Engine's `BillingService` interface. | Planned |
-| Reporting | Tenant-scoped reporting primitives. | Planned |
-| Mobile client | A client shell against the same Engine API. | Planned |
+| **Engine** | The backend. NestJS on Fastify, Drizzle ORM, and one PostgreSQL schema per customer. | Open |
+| **UI Frame** | The admin dashboard. Next.js and shadcn/ui, wired to the Engine API. | Open |
 
-The planned layers are genuinely not started. The Engine ships a
-`BillingService` interface and subscription tables, but no Stripe, Zoho or
-Razorpay adapter — see [Contributing](/docs/engine/contributing).
+Every layer is open source and usable on its own. There is no roadmap here on
+purpose — what ships next depends on what people actually need. If you want to
+help shape that, see [Contributing](/docs/engine/contributing).
 
 ## What "a layer" means
 

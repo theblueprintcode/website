@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
 import { WordReveal } from "@/components/word-reveal";
+import { DecodeText } from "@/components/decode-text";
 
 /**
  * Shared masthead for a layer page. Inverted blueprint band so a layer page
@@ -32,11 +33,11 @@ export function LayerHero({
       />
 
       <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-24 sm:pt-28">
-        <Reveal stagger={0.06}>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-            Layer {index} — {role}
-          </p>
-        </Reveal>
+        <DecodeText
+          as="p"
+          text={`Layer ${index} — ${role}`}
+          className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary"
+        />
 
         <WordReveal
           text={name}

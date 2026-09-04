@@ -1,34 +1,39 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
+import { PlateFace } from "@/components/plate-sketches";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * The hero's background plane: the system drawn as an exploded stack of
- * layers, bleeding off the right edge. This replaces the product screenshot
- * a landing page would normally put here — the drawing is the argument, since
- * the product is a set of layers rather than one screen.
+ * The hero's background plane: the system drawn as an exploded stack,
+ * bleeding off the right edge. This replaces the product screenshot a landing
+ * page would normally put here — the drawing is the argument, since the
+ * product is a foundation rather than one screen.
  *
- * Plates render back-to-front; the two that ship today are drawn solid, the
- * planned ones stay as hairline outlines.
+ * The stack is a drawing of a layered system, not a count of what ships. It
+ * needs no editing when a layer is added.
  */
+/** Top of the stack first: the plates render back-to-front, so the layers the
+ *  copy names sit nearest the reader. Same faces as the assembly section — the
+ *  hero is the same drawing, seen from further away. */
 const PLATES = [
-  { id: "L05", open: false },
-  { id: "L04", open: false },
-  { id: "L03", open: false },
-  { id: "L02", open: true },
-  { id: "L01", open: true },
+  { id: "p05", index: "05" },
+  { id: "p04", index: "04" },
+  { id: "p03", index: "03" },
+  { id: "uiframe", index: "02" },
+  { id: "engine", index: "01" },
 ];
 
-const GAP = 74;
+const GAP = 78;
 
 export function HeroPlane() {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
@@ -55,27 +60,35 @@ export function HeroPlane() {
           gsap.set(plate, { z: 0, opacity: 0 });
           tl.to(
             plate,
-            {
-              z: restZ(i),
-              opacity: 1,
-              duration: 1.1,
-              ease: "cubic-bezier(.22,1,.36,1)",
-            },
+            { z: restZ(i), opacity: 1, duration: 1.1, ease: "expo.out" },
             i * 0.1,
           );
         });
 
         // Scroll: the stack pulls further apart as the hero leaves.
-        gsap.to(plates, {
-          z: (i: number) => restZ(i) * 1.85,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.7,
+        //
+        // fromTo + immediateRender:false is load-bearing. A plain gsap.to()
+        // records its start value when the tween is built — which is z:0,
+        // set one line above by the entrance — so the first scrub tick
+        // yanked every plate back to zero and the stack collapsed into a
+        // single sheet before spreading. Stating the `from` explicitly, and
+        // refusing to render it until the scrub actually runs, keeps the
+        // scroll tween continuous with where the entrance left off.
+        gsap.fromTo(
+          plates,
+          { z: (i: number) => restZ(i) },
+          {
+            z: (i: number) => restZ(i) * 1.85,
+            ease: "none",
+            immediateRender: false,
+            scrollTrigger: {
+              trigger: el,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.7,
+            },
           },
-        });
+        );
       },
     );
 
@@ -90,28 +103,12 @@ export function HeroPlane() {
       style={{ perspective: "1600px" }}
     >
       <div
-        className="relative h-[560px] w-[560px]"
+        className="relative h-[520px] w-[520px]"
         style={{ transformStyle: "preserve-3d", transform: "rotateX(64deg) rotateZ(-40deg)" }}
       >
         {PLATES.map((plate) => (
-          <div
-            key={plate.id}
-            data-plate
-            className={`absolute inset-0 rounded-sm border ${
-              plate.open
-                ? "border-primary/90 bg-primary/12"
-                : "border-foreground/45 bg-foreground/[0.04]"
-            }`}
-          >
-            {plate.open && (
-              <div
-                className="absolute inset-0 opacity-40"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(45deg, var(--primary) 0 1px, transparent 1px 9px)",
-                }}
-              />
-            )}
+          <div key={plate.id} data-plate className="absolute inset-0">
+            <PlateFace id={plate.id} index={plate.index} />
           </div>
         ))}
       </div>

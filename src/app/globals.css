@@ -251,6 +251,16 @@
     color: var(--code-foreground, #cfd8e8);
     border: 1px solid color-mix(in srgb, #cfd8e8 16%, transparent);
     box-shadow: inset 0 1px 0 color-mix(in srgb, #cfd8e8 8%, transparent);
+
+    /* The panel is a dark plate in BOTH surface modes, so it has to carry its
+       own ink tokens. Without these, a terminal on the light sheet inherited
+       the page's navy --foreground and rendered navy-on-near-black — the
+       command was invisible. Utilities inside now resolve against the panel. */
+    --foreground: var(--code-foreground, #cfd8e8);
+    --muted-foreground: color-mix(in srgb, var(--code-foreground, #cfd8e8) 70%, transparent);
+    --primary: #d38a00;
+    --border: color-mix(in srgb, #cfd8e8 16%, transparent);
+    --destructive: #ff8f8f;
   }
 
   /* Feature cell: hairline box that lifts and warms on hover. */
@@ -259,13 +269,13 @@
     border: 1px solid var(--border);
     transition:
       background-color 180ms ease,
-      border-color 180ms ease,
-      transform 180ms ease;
+      border-color 180ms ease;
   }
+  /* No lift: FeatureGrid clips its cells (overflow-hidden is what makes the
+     hairline gap-px seams work), so a translateY hover sheared the top row. */
   .bp-cell:hover {
     background: color-mix(in srgb, var(--card) 90%, transparent);
     border-color: color-mix(in srgb, var(--primary) 60%, transparent);
-    transform: translateY(-2px);
   }
 
   /* Corner ticks that make a cell read as a drafted plate. */
@@ -280,6 +290,143 @@
   }
   .bp-tick::before { top: 6px; left: 6px; }
   .bp-tick::after { bottom: 6px; right: 6px; }
+
+  /* ── Drafting crosshair. Overlay only: the native cursor stays, so this
+        adds a reading of where you are without taking away how you point.
+        Every element is transform-driven and pointer-events:none. */
+  .bp-cursor {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+    font-family: var(--font-geist-mono);
+    --ink: #d38a00;
+  }
+  .bp-cursor.is-on {
+    opacity: 1;
+  }
+  .bp-cursor [data-h],
+  .bp-cursor [data-v] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+  .bp-cursor [data-h] {
+    width: 100%;
+    height: 1px;
+  }
+  .bp-cursor [data-v] {
+    width: 1px;
+    height: 100%;
+  }
+  .bp-cursor [data-dot] {
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--ink);
+    border-radius: 1px;
+  }
+  .bp-cursor [data-read] {
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    white-space: nowrap;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--ink) 85%, transparent);
+    transition: opacity 140ms ease;
+  }
+
+  /* Dimension box: drawn around whatever the pointer is over. */
+  .bp-cursor [data-box] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transition:
+      opacity 140ms ease,
+      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      height 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bp-cursor.is-measuring [data-read] {
+    opacity: 0;
+  }
+  .bp-cursor [data-box].is-on {
+    opacity: 1;
+  }
+  .bp-cursor [data-box] i {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--ink);
+  }
+  .bp-cursor [data-box] i:nth-child(1) { left: -4px; top: -4px; border-right: 0; border-bottom: 0; }
+  .bp-cursor [data-box] i:nth-child(2) { right: -4px; top: -4px; border-left: 0; border-bottom: 0; }
+  .bp-cursor [data-box] i:nth-child(3) { left: -4px; bottom: -4px; border-right: 0; border-top: 0; }
+  .bp-cursor [data-box] i:nth-child(4) { right: -4px; bottom: -4px; border-left: 0; border-top: 0; }
+  .bp-cursor [data-box] em {
+    position: absolute;
+    left: 50%;
+    top: -18px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bp-cursor { display: none; }
+  }
+
+  /* QR popover. Flat card on a hairline, per the drawing metaphor — no
+     drop shadow. Opens on hover or keyboard focus of the link inside. */
+  .bp-chai-pop {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    z-index: 20;
+    display: block;
+    /* Explicit: the popover is absolutely positioned at left:50% inside a
+       button-width wrapper, so shrink-to-fit would offer it half that and
+       max-width:100% would then crush the QR to a thumbnail. */
+    width: 160px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(6px);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+  .bp-chai-wrap:hover .bp-chai-pop,
+  .bp-chai-wrap:focus-within .bp-chai-pop {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .bp-chai .bp-steam {
+    opacity: 0.5;
+    transition: opacity 180ms ease;
+  }
+  .bp-chai:hover .bp-steam {
+    opacity: 1;
+    animation: bp-steam 1.6s ease-in-out infinite;
+  }
+  @keyframes bp-steam {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-1.5px); opacity: 0.45; }
+  }
 
   .bp-marquee {
     animation: bp-marquee 32s linear infinite;
@@ -306,8 +453,12 @@
 
   @media (prefers-reduced-motion: reduce) {
     .bp-marquee,
-    .bp-caret {
+    .bp-caret,
+    .bp-chai:hover .bp-steam {
       animation: none;
+    }
+    .bp-chai-pop {
+      transition: none;
     }
   }
 }

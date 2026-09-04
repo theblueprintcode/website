@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
 
 /**
  * Headline entrance: each word rises out from behind a clipping mask.
@@ -21,7 +22,7 @@ export function WordReveal({
 }) {
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const words = el.querySelectorAll("[data-word]");
@@ -59,10 +60,15 @@ export function WordReveal({
     // @ts-expect-error - polymorphic tag, ref type is the union of the three
     <Tag ref={ref} className={className}>
       {text.split(" ").map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden py-[0.06em] align-bottom">
+        // pb/-mb pair: the mask box extends below the baseline so descenders
+        // are not clipped, and the inter-word space now sits outside the mask
+        // (as a margin) instead of animating with the word.
+        <span
+          key={`${word}-${i}`}
+          className="-mb-[0.14em] mr-[0.25em] inline-block overflow-hidden pb-[0.14em] align-bottom"
+        >
           <span data-word className="inline-block">
             {word}
-            {" "}
           </span>
         </span>
       ))}

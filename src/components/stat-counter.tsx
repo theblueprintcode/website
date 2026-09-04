@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,7 +24,7 @@ export function StatCounter({
 }) {
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
@@ -66,7 +67,7 @@ export function StatCounter({
 
   return (
     // @ts-expect-error - polymorphic tag, ref covers both element types
-    <Tag ref={ref} className={className}>
+    <Tag ref={ref} className={`tabular-nums ${className ?? ""}`}>
       {(0).toFixed(decimals)}
       {suffix}
     </Tag>

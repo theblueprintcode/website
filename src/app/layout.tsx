@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { BlueprintCursor } from "@/components/blueprint-cursor";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TheBlueprintCode",
+  title: "TheBlueprintCode — SaaS foundations for developers",
   description:
-    "Free, MIT-licensed template components — Engine and UI Frame — for scaffolding a production multi-tenant SaaS in one setup step instead of months of groundwork.",
+    "Free, MIT-licensed foundations for any SaaS product — warehouse ops, logistics, hotel management, internal tools. Auth, roles, customer separation and an admin dashboard, ready in one setup command.",
   icons: { icon: "/favicon.png" },
 };
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <SmoothScroll />
+        <BlueprintCursor />
         <SiteNav />
         <main className="flex-1">{children}</main>
         <SiteFooter />

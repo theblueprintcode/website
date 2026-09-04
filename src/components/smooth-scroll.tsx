@@ -25,6 +25,9 @@ export function SmoothScroll() {
     gsap.ticker.lagSmoothing(0);
 
     ScrollTrigger.refresh();
+    // The webfont swap changes every element's height; re-measure once it
+    // lands, otherwise every trigger start is off by that reflow.
+    void document.fonts?.ready.then(() => ScrollTrigger.refresh());
 
     return () => {
       gsap.ticker.remove(raf);

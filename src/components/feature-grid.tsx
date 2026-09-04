@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,19 +19,46 @@ const THEMES = [
  *  "swappable themes" claim demonstrated instead of asserted. */
 function ThemeArtifact() {
   const [i, setI] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
 
+  // The strip only cycles while it is actually on screen. Left unguarded it
+  // re-rendered four motion spans every 2.2s for the whole session, including
+  // while the section sat far above the viewport.
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => {
-      if (!document.hidden) setI((n) => (n + 1) % THEMES.length);
-    }, 2200);
-    return () => clearInterval(id);
+
+    let id: ReturnType<typeof setInterval> | undefined;
+    const stop = () => {
+      clearInterval(id);
+      id = undefined;
+    };
+    const start = () => {
+      if (id) return;
+      id = setInterval(() => setI((n) => (n + 1) % THEMES.length), 2200);
+    };
+
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !document.hidden) start();
+      else stop();
+    });
+    io.observe(el);
+
+    const onVisibility = () => (document.hidden ? stop() : undefined);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      stop();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const theme = THEMES[i];
 
   return (
-    <div className="flex items-center gap-3">
+    <div ref={ref} className="flex items-center gap-3">
       <div className="flex gap-1.5">
         {theme.swatches.map((color, n) => (
           <motion.span
@@ -84,32 +112,32 @@ function EnvArtifact() {
 const FEATURES = [
   {
     n: "01",
-    title: "Schema-per-tenant isolation",
-    body: "Every company gets its own Postgres schema. Cross-tenant leakage is a structural impossibility, not a WHERE clause you must remember.",
+    title: "One customer cannot read another",
+    body: "Every customer account gets its own PostgreSQL schema. Data leaking between them is structurally impossible, not a WHERE clause you have to remember on every query.",
     artifact: <Chips items={["tenant_acme", "tenant_globex", "tenant_initech"]} />,
   },
   {
     n: "02",
-    title: "Module-based RBAC",
-    body: "Permissions group by module rather than a flat string list, so a new feature ships with its access rules instead of a migration to backfill them.",
+    title: "Roles that ship with the feature",
+    body: "Permissions group by module rather than a flat string list, so a new feature arrives with its own access rules instead of a migration to backfill them.",
     artifact: <Chips items={["billing:manage", "users:view", "reports:*"]} tone="gold" />,
   },
   {
     n: "03",
-    title: "Five SSO providers, free",
-    body: "Google, GitHub, Microsoft, Discord and Apple, JWT-based, wired to the tenant model — no per-seat identity vendor in the loop.",
+    title: "Five sign-in providers, free",
+    body: "Google, GitHub, Microsoft, Discord and Apple, JWT-based and already wired to your user model — no per-seat identity vendor in the loop.",
     artifact: <Chips items={["Google", "GitHub", "Microsoft", "Discord", "Apple"]} />,
   },
   {
     n: "04",
-    title: "Config strict by default",
-    body: "A missing required env variable fails the boot. You find out on deploy, not from a 500 in production three hours later.",
+    title: "Strict config by default",
+    body: "A missing required environment variable stops the boot. You find out on deploy, not from a 500 in production three hours later.",
     artifact: <EnvArtifact />,
   },
   {
     n: "05",
-    title: "Themes and fonts, swappable",
-    body: "A real multi-theme and multi-font system, not one locked palette. Change the preset, every component follows.",
+    title: "It can look like your product",
+    body: "A real multi-theme and multi-font system, not one locked palette. Change the preset and every component follows — nobody has to know where it started.",
     artifact: <ThemeArtifact />,
   },
   {
@@ -123,7 +151,7 @@ const FEATURES = [
 export function FeatureGrid() {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 

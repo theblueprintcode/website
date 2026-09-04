@@ -5,11 +5,13 @@ import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import { WordReveal } from "@/components/word-reveal";
 import { Terminal } from "@/components/terminal";
-import { ProductFrame } from "@/components/product-frame";
 import { HeroPlane } from "@/components/hero-plane";
 import { FeatureGrid } from "@/components/feature-grid";
 import { Rail, type RailItem } from "@/components/rail";
+import { StatusLedger, type LedgerRow } from "@/components/status-ledger";
 import { StackBento } from "@/components/stack-bento";
+import { ExplodedStack } from "@/components/exploded-stack";
+import { DecodeText } from "@/components/decode-text";
 
 const STACK = [
   "NestJS",
@@ -22,15 +24,15 @@ const STACK = [
 
 const STATS = [
   { value: 65000, label: "req/sec — Fastify + Drizzle ORM benchmark" },
-  { value: 5, label: "SSO providers wired in, no identity vendor" },
-  { value: 1, label: "command from clone to a seeded tenant" },
+  { value: 5, label: "sign-in providers wired in, no identity vendor" },
+  { value: 1, label: "command from clone to a running app" },
 ];
 
 const SETUP: RailItem[] = [
   {
     label: "Step 01",
     title: "Clone the Engine",
-    body: "The backend template: NestJS on Fastify, Postgres, Drizzle, the tenant model already in place.",
+    body: "The backend: NestJS on Fastify, PostgreSQL and Drizzle, with auth, roles and customer separation already wired.",
   },
   {
     label: "Step 02",
@@ -40,40 +42,21 @@ const SETUP: RailItem[] = [
   {
     label: "Step 03",
     title: "Point UI Frame at it",
-    body: "The admin shell comes up against your own tenants — users, roles, billing views already wired to the API.",
+    body: "The admin dashboard comes up against your own data — users, roles and settings already talking to the API. From here you build your product.",
   },
 ];
 
-const ROADMAP: RailItem[] = [
+
+const LEDGER: LedgerRow[] = [
   {
-    label: "Shipped",
-    title: "Engine — the backend",
-    body: "Multi-tenant API, RBAC, SSO, strict config. Available on GitHub today.",
-    status: "shipped",
+    name: "Engine",
+    note: "REST API, JWT auth and refresh sessions, roles and permissions as JSON policy, five sign-in providers, strict config, a PostgreSQL schema per customer.",
+    built: true,
   },
   {
-    label: "Shipped",
-    title: "UI Frame — the admin frontend",
-    body: "Next.js admin shell, theme and font system, shadcn/ui component layer.",
-    status: "shipped",
-  },
-  {
-    label: "Planned",
-    title: "Reporting",
-    body: "Tenant-scoped reporting primitives. On the table, not started.",
-    status: "planned",
-  },
-  {
-    label: "Planned",
-    title: "Dashboard component",
-    body: "A metrics surface that reads the tenant schema directly. Not started.",
-    status: "planned",
-  },
-  {
-    label: "Planned",
-    title: "Mobile app template",
-    body: "A client shell against the same Engine API. Not started.",
-    status: "planned",
+    name: "UI Frame",
+    note: "Admin shell with users, roles, auth and settings pages, a swappable theme and font system, and an API client already wired to the Engine.",
+    built: true,
   },
 ];
 
@@ -94,27 +77,31 @@ export default function Home() {
 
         <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 pt-24 sm:pt-32">
           <Reveal className="max-w-2xl" stagger={0.07}>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-              TheBlueprintCode — a system in layers
-            </p>
+            <DecodeText
+              as="p"
+              text="TheBlueprintCode — open-source SaaS foundations"
+              className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary"
+            />
           </Reveal>
 
           <WordReveal
-            text="The blueprint for multi-tenant SaaS."
+            text="The foundation for whatever you’re building."
             delay={0.12}
             className="mt-7 max-w-3xl text-left text-4xl font-medium leading-[1.06] tracking-tight sm:text-6xl lg:text-7xl"
           />
 
           <Reveal className="mt-7 max-w-xl" stagger={0.06}>
             <p className="text-lg leading-relaxed text-foreground/75">
-              The groundwork every multi-tenant SaaS rebuilds — drawn once,
-              released as layers you fork. Two are open today.
+              Warehouse ops, logistics, hotel management, an internal
+              analytics tool — different products, same first six months. Auth,
+              roles, customer separation and an admin dashboard, already built
+              and MIT-licensed. Start at feature one.
             </p>
           </Reveal>
 
           <Reveal className="mt-10 flex flex-wrap items-center gap-7" stagger={0.08}>
             <Button size="lg" render={<Link href="/docs" />} nativeButton={false}>
-              Read the docs
+              Get started
               <ArrowRight className="transition-transform duration-200 group-hover/button:translate-x-0.5" />
             </Button>
             <Link
@@ -166,7 +153,7 @@ export default function Home() {
       {/* ── Capabilities, each with something to look at */}
       <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
         <Reveal className="mb-10 max-w-2xl" stagger={0.06}>
-          <p className="bp-sheet-number">SHEET 02 / 06 — CAPABILITIES</p>
+          <DecodeText as="p" className="bp-sheet-number" text="SHEET 02 / 06 — CAPABILITIES" />
           <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
             The groundwork, already poured.
           </h2>
@@ -184,7 +171,7 @@ export default function Home() {
       <section className="border-t border-border bg-card py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mb-10 max-w-2xl" stagger={0.06}>
-            <p className="bp-sheet-number">SHEET 03 / 06 — THE STACK</p>
+            <DecodeText as="p" className="bp-sheet-number" text="SHEET 03 / 06 — THE STACK" />
             <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
               Why these picks, and what you get for them.
             </h2>
@@ -199,72 +186,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── The two components, with their real config on show */}
+      {/* ── The layers, with their real config on show */}
       <section className="bp-invert relative overflow-hidden border-y border-border py-16 sm:py-20">
         <div className="bp-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden />
         <div className="relative mx-auto max-w-6xl px-6">
           <Reveal className="mb-10 max-w-2xl" stagger={0.06}>
-            <p className="bp-sheet-number">SHEET 04 / 06 — THE LAYERS</p>
+            <DecodeText as="p" className="bp-sheet-number" text="SHEET 04 / 06 — THE ASSEMBLY" />
             <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-              Two layers are open. The rest are drawn.
+              One system, drawn in layers.
             </h2>
+            <p className="mt-4 text-foreground/70">
+              Each layer is a repository you fork on its own. Scroll to open the
+              assembly; hover a layer to lift it out of it.
+            </p>
           </Reveal>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Reveal className="flex flex-col gap-5 rounded-lg border border-border bg-card/60 p-6">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-primary/70">
-                  Layer 01 — API + tenant
-                </p>
-                <h3 className="mt-2 text-xl font-medium tracking-tight">Engine</h3>
-                <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-                  NestJS on Fastify, PostgreSQL schema-per-tenant isolation, and
-                  module-based RBAC instead of flat permission strings.
-                </p>
-              </div>
-              <Terminal
-                file="rbac-tenant.json"
-                command='cat config/rbac-tenant.json'
-                lines={[
-                  { text: '{ "roles": {' },
-                  { text: '    "Admin":  { "billing": ["view","manage"] },' },
-                  { text: '    "Mobile": { "billing": ["view"] }' },
-                  { text: "} }" },
-                ]}
-              />
-            </Reveal>
-
-            <Reveal className="flex flex-col gap-5 rounded-lg border border-border bg-card/60 p-6">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-primary/70">
-                  Layer 02 — admin
-                </p>
-                <h3 className="mt-2 text-xl font-medium tracking-tight">UI Frame</h3>
-                <p className="mt-3 text-sm leading-relaxed text-foreground/70">
-                  Next.js and shadcn/ui with a real multi-theme, multi-font
-                  system built in — swap the preset, every component follows.
-                </p>
-              </div>
-              <Terminal
-                file="theme.ts"
-                command="npx uiframe theme set tangerine"
-                lines={[
-                  { text: "→ preset: tangerine" },
-                  { text: "→ font: outfit" },
-                  { text: "→ 40+ components retinted, no rebuild", tone: "note" },
-                ]}
-              />
-            </Reveal>
-          </div>
+          <ExplodedStack />
         </div>
       </section>
 
       {/* ── Setup */}
       <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
         <Reveal className="mb-12 max-w-2xl" stagger={0.06}>
-          <p className="bp-sheet-number">SHEET 05 / 06 — SETUP</p>
+          <DecodeText as="p" className="bp-sheet-number" text="SHEET 05 / 06 — SETUP" />
           <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-            Clone to first tenant, in one sitting.
+            Clone to a running app, in one sitting.
           </h2>
         </Reveal>
 
@@ -284,23 +230,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Roadmap, honest about what is not built */}
+      {/* ── The ledger: what you can clone today */}
       <section className="border-t border-border bg-card py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mb-12 max-w-2xl" stagger={0.06}>
-            <p className="bp-sheet-number">SHEET 06 / 06 — THE REST OF THE SYSTEM</p>
+            <DecodeText as="p" className="bp-sheet-number" text="SHEET 06 / 06 — THE LEDGER" />
             <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-              Drawn, not promised.
+              What ships today.
             </h2>
             <p className="mt-4 text-foreground/70">
-              Hollow markers are layers we have designed for but not built.
-              Engine ships a <code className="font-mono text-[13px] text-foreground">BillingService</code>{" "}
-              interface with no adapter behind it — that is the honest state of
-              everything below the line.
+              Every row is code you can clone right now, not a plan. The ledger
+              grows as layers land.
             </p>
           </Reveal>
 
-          <Rail items={ROADMAP} />
+          <StatusLedger rows={LEDGER} />
         </div>
       </section>
 

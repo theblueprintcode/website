@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -33,8 +33,18 @@ export function SiteNav() {
   const pathname = usePathname();
   const overDarkHero = DARK_HERO.test(pathname) && !scrolled;
 
+  const progress = useRef<HTMLSpanElement>(null);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    // One listener drives both the frosted state and the sheet rule. The rule
+    // is written straight to the node — scrolling should not re-render a nav.
+    const onScroll = () => {
+      setScrolled(window.scrollY > 80);
+      const el = progress.current;
+      if (!el) return;
+      const span = document.documentElement.scrollHeight - window.innerHeight;
+      el.style.transform = `scaleX(${span > 0 ? window.scrollY / span : 0})`;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -83,6 +93,13 @@ export function SiteNav() {
           </Button>
         </div>
       </nav>
+      {/* Sheet rule: how far through the drawing you are. */}
+      <span
+        ref={progress}
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-px origin-left bg-primary"
+        style={{ transform: "scaleX(0)" }}
+      />
     </header>
   );
 }

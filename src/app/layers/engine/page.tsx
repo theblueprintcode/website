@@ -11,7 +11,7 @@ import { OrmBenchmark } from "@/components/orm-benchmark";
 export const metadata: Metadata = {
   title: "Engine — TheBlueprintCode",
   description:
-    "The API and tenant layer: NestJS on Fastify, PostgreSQL schema-per-tenant isolation, Drizzle ORM and module-based RBAC.",
+    "The backend layer: NestJS on Fastify, Drizzle ORM, roles configured in JSON, and each customer's data in its own PostgreSQL schema.",
 };
 
 const SPEC = [
@@ -54,8 +54,8 @@ export default function EnginePage() {
       <LayerHero
         index="01"
         name="Engine"
-        role="API + tenant"
-        summary="The backend layer. NestJS on Fastify, PostgreSQL schema-per-tenant isolation, Drizzle ORM, and a module-based RBAC system configured in JSON."
+        role="API + data"
+        summary="The backend your product sits on. NestJS on Fastify, Drizzle ORM, roles you configure in JSON, and each customer’s data isolated in its own PostgreSQL schema."
         docsHref="/docs/engine"
         repoHref="https://github.com/theblueprintcode/engine"
       />
@@ -230,7 +230,7 @@ export default function EnginePage() {
           <Reveal stagger={0.06}>
             <p className="bp-sheet-number">05 — START</p>
             <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-              One command to a seeded tenant.
+              One command to a running backend.
             </h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">
               Setup is idempotent — re-running it skips an existing{" "}
@@ -261,40 +261,6 @@ export default function EnginePage() {
         </div>
       </section>
 
-      {/* ── Honest gaps */}
-      <section className="border-t border-border bg-card py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <Reveal className="max-w-2xl" stagger={0.06}>
-            <p className="bp-sheet-number">06 — NOT BUILT YET</p>
-            <h2 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-              Interfaces without adapters.
-            </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              Engine ships a strict{" "}
-              <code className="font-mono text-[13px] text-foreground">BillingService</code>{" "}
-              interface and the subscription tables, but no Stripe, Zoho or
-              Razorpay adapter behind it. Storage falls back to a working{" "}
-              <code className="font-mono text-[13px] text-foreground">
-                LocalStorageAdapter
-              </code>{" "}
-              with no S3 or GCS implementation. Enterprise SSO — Okta, Auth0,
-              SAML 2.0 — is not implemented either.
-            </p>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              If your project needs any of those on day one, you are writing
-              that adapter. Better to know now than to find out in week three.
-            </p>
-            <Link
-              href="/docs/engine/contributing"
-              className="group mt-7 inline-flex items-center gap-1.5 text-[0.9375rem] font-medium text-primary"
-            >
-              Where help is wanted
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ── Next layer */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <Reveal>
@@ -307,7 +273,7 @@ export default function EnginePage() {
                 Next layer
               </span>
               <span className="mt-1.5 block text-xl font-medium tracking-tight">
-                UI Frame — the admin layer
+                UI Frame — the admin dashboard
               </span>
             </span>
             <ArrowRight className="size-5 shrink-0 text-primary transition-transform duration-200 group-hover:translate-x-1" />

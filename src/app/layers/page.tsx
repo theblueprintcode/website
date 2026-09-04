@@ -3,20 +3,21 @@ import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { WordReveal } from "@/components/word-reveal";
+import { DecodeText } from "@/components/decode-text";
 
 export const metadata: Metadata = {
   title: "Layers — TheBlueprintCode",
   description:
-    "TheBlueprintCode is one system released as layers. Engine and UI Frame are open today; the rest are drawn but not built.",
+    "TheBlueprintCode is one system, released as layers you fork. Engine is the backend, UI Frame is the admin dashboard, and every layer is open source.",
 };
 
 const LAYERS = [
   {
     index: "01",
     name: "Engine",
-    role: "API + tenant",
+    role: "API + data",
     href: "/layers/engine",
-    body: "NestJS on Fastify, PostgreSQL schema-per-tenant isolation, Drizzle ORM, module-based RBAC and five SSO providers.",
+    body: "NestJS on Fastify with Drizzle ORM, JSON-configured roles, five sign-in providers, and each customer's data in its own PostgreSQL schema.",
     open: true,
   },
   {
@@ -24,29 +25,8 @@ const LAYERS = [
     name: "UI Frame",
     role: "admin",
     href: "/layers/ui-frame",
-    body: "Next.js and shadcn/ui on Base UI, a swappable theme and font system, and an API client wired to the Engine.",
+    body: "Next.js and shadcn/ui on Base UI, a swappable theme and font system, and an API client already wired to the Engine.",
     open: true,
-  },
-  {
-    index: "03",
-    name: "Billing",
-    role: "planned",
-    body: "Adapters behind the Engine's existing BillingService interface — Stripe, Zoho, Razorpay. Interface exists, adapters do not.",
-    open: false,
-  },
-  {
-    index: "04",
-    name: "Reporting",
-    role: "planned",
-    body: "Tenant-scoped reporting primitives reading the tenant schema directly. Not started.",
-    open: false,
-  },
-  {
-    index: "05",
-    name: "Mobile client",
-    role: "planned",
-    body: "A client shell against the same Engine API. Not started.",
-    open: false,
   },
 ];
 
@@ -60,11 +40,11 @@ export default function LayersPage() {
           aria-hidden
         />
         <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pt-28">
-          <Reveal stagger={0.06}>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-              TheBlueprintCode — a system in layers
-            </p>
-          </Reveal>
+          <DecodeText
+            as="p"
+            text="TheBlueprintCode — a system in layers"
+            className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary"
+          />
           <WordReveal
             text="The layers."
             delay={0.1}
@@ -72,8 +52,9 @@ export default function LayersPage() {
           />
           <Reveal className="mt-6 max-w-xl" stagger={0.06}>
             <p className="text-lg leading-relaxed text-foreground/75">
-              One system, released a layer at a time. Each is a repository you
-              fork, not a package you install. Two are open today.
+              One foundation, released a layer at a time. Each is a repository
+              you fork, not a package you install — what you build on top is
+              yours, in whatever industry you build it.
             </p>
           </Reveal>
         </div>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsoLayoutEffect } from "@/lib/use-iso-layout-effect";
 import { StatCounter } from "@/components/stat-counter";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -34,7 +35,7 @@ function Chips({ items }: { items: string[] }) {
 export function StackBento() {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
@@ -153,7 +154,7 @@ export function StackBento() {
           Strict by default
         </p>
         <p className="text-2xl font-medium tracking-tight">
-          It fails on deploy, not at 3am.
+          It fails on deploy, not at midnight.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground">
           Joi validates every required variable at boot. A missing secret stops
