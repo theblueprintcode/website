@@ -1,0 +1,40 @@
+---
+title: TheBlueprintCode
+description: One system for building multi-tenant SaaS, released as layers you can fork.
+---
+
+TheBlueprintCode is a system for building multi-tenant SaaS applications. It is
+released as **layers** — each one an independent, MIT-licensed template you can
+fork, customise and ship.
+
+Two layers are open today. The rest are drawn but not built.
+
+## The layers
+
+| Layer | What it is | Status |
+| --- | --- | --- |
+| **Engine** | The API and tenant layer. NestJS on Fastify, PostgreSQL schema-per-tenant, Drizzle ORM. | Open |
+| **UI Frame** | The admin layer. Next.js and shadcn/ui, wired to the Engine API. | Open |
+| Billing | Subscription and payment adapters over the Engine's `BillingService` interface. | Planned |
+| Reporting | Tenant-scoped reporting primitives. | Planned |
+| Mobile client | A client shell against the same Engine API. | Planned |
+
+The planned layers are genuinely not started. The Engine ships a
+`BillingService` interface and subscription tables, but no Stripe, Zoho or
+Razorpay adapter — see [Contributing](/docs/engine/contributing).
+
+## What "a layer" means
+
+Each layer is a repository you clone, not a package you install. There is no
+runtime dependency on us, no licence key, and no upgrade path to buy. You fork
+it and it becomes yours.
+
+That is a deliberate trade-off. You get no automatic updates, and you own the
+code from the moment you fork. In exchange you never inherit a framework's
+release schedule or its abandonment.
+
+## Start here
+
+- **[Architecture](/docs/architecture)** — how the layers fit together
+- **[Engine](/docs/engine)** — the backend layer
+- **[UI Frame](/docs/ui-frame)** — the admin layer

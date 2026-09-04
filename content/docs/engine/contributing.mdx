@@ -1,0 +1,37 @@
+---
+title: Contributing
+description: Where the Engine has interfaces but no adapters.
+---
+
+The core architecture is complete. What is missing is integration with paid,
+enterprise third-party services that need accounts we do not always have.
+These are the areas where help is most useful.
+
+## Enterprise SSO
+
+Working today: Google, GitHub, Microsoft, Discord, Apple.
+
+Wanted, as Passport.js strategies: **Okta**, **Auth0**, **SAML 2.0**,
+**Facebook / Meta**, **LinkedIn**.
+
+## Billing adapters
+
+The Engine ships a strict `BillingService` interface and the database tables
+for subscriptions. What it does not ship is an adapter behind that interface.
+
+Wanted: **Stripe**, **Zoho Billing**, **Razorpay**.
+
+## Cloud storage adapters
+
+Storage currently falls back to a functional `LocalStorageAdapter`.
+
+Wanted: **AWS S3**, **Google Cloud Storage**.
+
+## How to contribute
+
+1. Fork the repository.
+2. Add your integration — for example in `src/common/billing/` or
+   `src/auth/strategies/`.
+3. Read secrets strictly using `this.configService.getOrThrow()`. The Engine
+   is strict by default and contributions should not introduce fallbacks.
+4. Open a pull request.

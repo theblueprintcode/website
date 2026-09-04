@@ -1,0 +1,343 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* Fumadocs ships its own source scan; point it at the docs UI package so the
+   sidebar and page chrome get their utilities generated. */
+@source "../../node_modules/fumadocs-ui/dist/**/*.js";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+  --color-elevated: var(--elevated);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+  Real TheBlueprintCode brand (verified in engine/README.md + uiframe/globals.css,
+  not generated): navy #0041BA, pale-blue #CFD8E8, gold #D38A00.
+  Single locked dark "blueprint/cyanotype" mode — no light variant, see
+  .tastemaker/style-lock.md.
+
+  Token remap note: shadcn's --primary is the FILLED-button/active-state role.
+  The brand's own navy (#0041BA) fails as a fill on this dark background
+  (1.82:1, checked via check_contrast.py) — it's a text/link/icon color only.
+  So here --primary = brand gold (#D38A00, the real CTA fill) and
+  --accent = brand navy (#0041BA, links/icon-tint/text-accent register).
+  This is a UI-role swap, not a brand-color change — see style-lock.md's
+  Color contract section for the verified ratios behind this.
+*/
+/*
+  Two surface modes, one token set.
+
+  Default (:root) is the LIGHT sheet — white paper, navy ink, navy CTA fill.
+  `.bp-invert` flips the same tokens to the blueprint band: navy ground, pale
+  ink, gold CTA fill. Anything inside an inverted section recolors on its own
+  — cards, borders, buttons, code panels — because it reads these vars rather
+  than hard-coded hexes.
+
+  Brand (verified in engine/README.md + uiframe/globals.css): navy #0041BA,
+  pale-blue #CFD8E8, gold #D38A00. `--primary` is the filled-CTA role, so it
+  is navy on white (8.59:1 with white text) and gold on navy (5.48:1 with
+  navy text) — the same brand, each color used where it actually passes.
+*/
+:root {
+  --font-sans: var(--font-geist-sans);
+
+  --background: #ffffff;
+  --foreground: #0a1c47; /* navy ink, 15.8:1 on white */
+  --card: #f4f7fc;
+  --card-foreground: #0a1c47;
+  --popover: #ffffff;
+  --popover-foreground: #0a1c47;
+  --primary: #0041ba; /* brand navy — the CTA fill on paper */
+  --primary-foreground: #ffffff; /* 8.59:1 */
+  --secondary: #eef3fb;
+  --secondary-foreground: #0a1c47;
+  --muted: #f4f7fc;
+  --muted-foreground: #4a5b7d; /* 7.1:1 on white */
+  --accent: #b87700; /* brand gold, darkened to 4.6:1 for marks on paper */
+  --accent-foreground: #0a1c47;
+  --destructive: #b42318;
+
+  --code: #001233; /* code panels stay a dark plate in both modes */
+  --code-foreground: #cfd8e8;
+  --elevated: #e6eefb;
+
+  --border: color-mix(in srgb, #0041ba 16%, transparent);
+  --input: color-mix(in srgb, #0041ba 22%, transparent);
+  --ring: #0041ba;
+  --grid-line: #0041ba; /* blueprint ruling, tinted per mode */
+  --grid-minor: 7%;
+  --grid-major: 13%;
+
+  --chart-1: #0041ba;
+  --chart-2: #b87700;
+  --chart-3: #4a5b7d;
+  --chart-4: #16323c;
+  --chart-5: #cfd8e8;
+  --radius: 0.5rem;
+
+  --sidebar: #f4f7fc;
+  --sidebar-foreground: #0a1c47;
+  --sidebar-primary: #0041ba;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef3fb;
+  --sidebar-accent-foreground: #0a1c47;
+  --sidebar-border: color-mix(in srgb, #0041ba 16%, transparent);
+  --sidebar-ring: #0041ba;
+}
+
+/* The blueprint band. Applied to a <section>; everything inside inverts. */
+.bp-invert {
+  --background: #001e5f;
+  --foreground: #cfd8e8;
+  --card: #002982;
+  --card-foreground: #cfd8e8;
+  --popover: #002982;
+  --popover-foreground: #cfd8e8;
+  --primary: #d38a00; /* gold is the CTA fill only on navy */
+  --primary-foreground: #001e5f;
+  --secondary: #16323c;
+  --secondary-foreground: #cfd8e8;
+  --muted: #002982;
+  --muted-foreground: color-mix(in srgb, #cfd8e8 70%, transparent);
+  --accent: #d38a00;
+  --accent-foreground: #001e5f;
+  --destructive: #ff8f8f;
+
+  --code: #000f33;
+  --elevated: #003aa8;
+
+  --border: color-mix(in srgb, #cfd8e8 18%, transparent);
+  --input: color-mix(in srgb, #cfd8e8 22%, transparent);
+  --ring: #d38a00;
+  --grid-line: #cfd8e8;
+  --grid-minor: 8%;
+  --grid-major: 16%;
+
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer components {
+  /* Two-tier graph-paper grid — 16px minor lines, 96px major lines every
+     6th cell, the way real drafting vellum reads at a glance instead of
+     disappearing into the background. */
+  .bp-grid {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--grid-line) var(--grid-minor), transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--grid-line) var(--grid-minor), transparent) 1px, transparent 1px),
+      linear-gradient(color-mix(in srgb, var(--grid-line) var(--grid-major), transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--grid-line) var(--grid-major), transparent) 1px, transparent 1px);
+    background-size:
+      16px 16px,
+      16px 16px,
+      96px 96px,
+      96px 96px;
+  }
+
+  /* Drafting-page registration marks: cross-hair + center dot, sized to
+     actually read as a technical drawing element, not a hairline. */
+  .bp-crop-mark {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    pointer-events: none;
+  }
+  .bp-crop-mark::before,
+  .bp-crop-mark::after {
+    content: "";
+    position: absolute;
+    background: color-mix(in srgb, var(--foreground) 45%, transparent);
+  }
+  .bp-crop-mark::before {
+    width: 100%;
+    height: 1.5px;
+    top: 50%;
+  }
+  .bp-crop-mark::after {
+    width: 1.5px;
+    height: 100%;
+    left: 50%;
+  }
+
+  /* Sheet index label — "DWG 01/04" style annotation, the recurring
+     blueprint motif that ties each section back to a drafting sheet. */
+  .bp-sheet-number {
+    font-family: var(--font-geist-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--primary);
+  }
+
+  .bp-sheet-number::before {
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 1px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background: color-mix(in srgb, var(--primary) 70%, transparent);
+  }
+}
+@layer components {
+  /* Grid is decoration, not content: it fades out where text lives. */
+  .bp-grid-fade {
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 78%);
+  }
+
+  /* Code/terminal ground. Darker than the page so it reads as a recessed
+     panel instead of another blue rectangle floating on blue. */
+  .bp-code {
+    background: var(--code);
+    color: var(--code-foreground, #cfd8e8);
+    border: 1px solid color-mix(in srgb, #cfd8e8 16%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #cfd8e8 8%, transparent);
+  }
+
+  /* Feature cell: hairline box that lifts and warms on hover. */
+  .bp-cell {
+    background: color-mix(in srgb, var(--card) 55%, transparent);
+    border: 1px solid var(--border);
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+  .bp-cell:hover {
+    background: color-mix(in srgb, var(--card) 90%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* Corner ticks that make a cell read as a drafted plate. */
+  .bp-tick::before,
+  .bp-tick::after {
+    content: "+";
+    position: absolute;
+    font-family: var(--font-geist-mono);
+    font-size: 11px;
+    line-height: 1;
+    color: color-mix(in srgb, var(--foreground) 30%, transparent);
+  }
+  .bp-tick::before { top: 6px; left: 6px; }
+  .bp-tick::after { bottom: 6px; right: 6px; }
+
+  .bp-marquee {
+    animation: bp-marquee 32s linear infinite;
+  }
+  .bp-marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  @keyframes bp-marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  .bp-caret {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    vertical-align: -2px;
+    background: #d38a00;
+    animation: bp-blink 1s steps(2, start) infinite;
+  }
+  @keyframes bp-blink {
+    to { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bp-marquee,
+    .bp-caret {
+      animation: none;
+    }
+  }
+}
+
+/*
+  Fumadocs reads its own --color-fd-* variables. Map them onto the blueprint
+  tokens so the docs are the same product as the rest of the site rather than
+  a default neutral theme bolted on.
+*/
+:root {
+  --color-fd-background: var(--background);
+  --color-fd-foreground: var(--foreground);
+  --color-fd-muted: var(--muted);
+  --color-fd-muted-foreground: var(--muted-foreground);
+  --color-fd-popover: var(--popover);
+  --color-fd-popover-foreground: var(--popover-foreground);
+  --color-fd-card: var(--card);
+  --color-fd-card-foreground: var(--card-foreground);
+  --color-fd-border: var(--border);
+  --color-fd-primary: var(--primary);
+  --color-fd-primary-foreground: var(--primary-foreground);
+  --color-fd-secondary: var(--secondary);
+  --color-fd-secondary-foreground: var(--secondary-foreground);
+  --color-fd-accent: var(--secondary);
+  --color-fd-accent-foreground: var(--foreground);
+  --color-fd-ring: var(--ring);
+}
+
+/* The site nav already spans the page, so the docs shell starts below it. */
+#nd-docs-layout,
+#nd-sidebar {
+  --fd-nav-height: 0px;
+}

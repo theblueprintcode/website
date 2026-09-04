@@ -1,0 +1,31 @@
+---
+title: UI Frame
+description: The admin layer — Next.js and shadcn/ui, wired to the Engine API.
+---
+
+UI Frame is the admin dashboard layer. Next.js 16 on the App Router, React,
+and shadcn/ui, built to connect to the [Engine](/docs/engine) backend.
+
+## What it gives you
+
+- A working admin shell: users, roles, auth, settings and CRM pages
+- A theme and font system with swappable presets, not one locked palette
+- shadcn/ui on Base UI primitives, already wired to the theme tokens
+- An API client with JWT handling, interceptors and error handling
+- CLI generators for forms
+
+## Project structure
+
+| Path | Contents |
+| --- | --- |
+| `src/app/(main)` | The dashboard pages — Users, Roles, Auth, Settings, CRM |
+| `src/lib/api-client.ts` | Fetch wrapper: JWT tokens, interceptors, error handling |
+| `src/components/ui` | shadcn/ui primitive components |
+| `scripts/` | CLI tools for code generation |
+
+## A note on the pairing
+
+UI Frame expects the Engine. It is not a standalone dashboard template — the
+auth flow, the tenant scoping and the API client all assume the Engine's
+contract. If you fork UI Frame alone you will be rebuilding that contract
+yourself.

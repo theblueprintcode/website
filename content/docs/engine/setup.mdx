@@ -1,0 +1,90 @@
+---
+title: Setup
+description: From clone to a seeded tenant.
+---
+
+## Local development
+
+```bash
+# Install dependencies
+npm install
+
+# Start local infrastructure (Postgres & Redis)
+docker-compose up -d
+
+# One-shot bootstrap
+npm run setup
+
+# Start the backend
+npm run start:dev
+```
+
+`npm run setup` creates `.env` with generated JWT secrets, runs the
+migrations, and interactively seeds a root admin plus a first tenant company.
+
+It is **idempotent** — re-running it skips `.env` creation if the file already
+exists, and skips seeding any root user or tenant account that is already
+there. You can run it again after pulling without wiping your data.
+
+## Environment
+
+Copy the example file and fill in your secrets:
+
+```bash
+cp .env.example .env
+```
+
+Joi validates these at boot. Anything marked Required fails the app fast at
+startup if missing.
+
+### Core
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `NODE_ENV` | No | `development` | `development` \| `production` \| `test` |
+| `PORT` | Yes | — | Port the Fastify server listens on |
+| `API_BASE_URL` | Yes | — | Public base URL of this API — builds OAuth callbacks and asset links |
+| `FRONTEND_URL` | Yes | — | Base URL of the frontend — used in email links |
+| `DATABASE_URL` | Yes | — | Postgres connection string |
+| `MIGRATIONS_AUTO_APPLY` | No | `false` | Run Drizzle migrations automatically on boot |
+
+### Connection pooling
+
+Schema-per-tenant means one pool per schema. These three control that, and
+they are the settings most worth tuning under load.
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `DB_POOL_MAX` | Yes | Max connections for the template (`public`) schema pool |
+| `TENANT_POOL_MAX` | Yes | Max connections per per-tenant schema pool |
+| `TENANT_POOL_IDLE_TTL_MS` | Yes | Idle time before an unused tenant pool is evicted |
+
+The eviction TTL matters: without it, a system with many tenants accumulates
+idle pools until Postgres refuses new connections.
+
+### Queues, tokens and mail
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `REDIS_HOST` / `REDIS_PORT` | Yes | Redis connection for queues |
+| `JWT_ACCESS_SECRET` | Yes | Signing secret for access tokens |
+| `JWT_REFRESH_SECRET` | Yes | Signing secret for refresh tokens |
+| `JWT_ACCESS_EXPIRES_IN` | Yes | Access token lifetime, e.g. `15m` |
+| `JWT_REFRESH_EXPIRES_IN` | Yes | Refresh token lifetime, e.g. `30d` |
+| `SMTP_HOST` | Yes | SMTP host for transactional email |
+| `SMTP_PORT` | Yes | SMTP port (`465` = implicit TLS) |
+| `SMTP_USER` / `SMTP_PASS` | No | SMTP auth credentials |
+| `MAIL_FROM` | Yes | `From` address on outgoing email |
+
+### SSO providers
+
+Optional **as a group** — fill in only the providers you enable. An unset
+provider simply leaves that strategy unconfigured.
+
+| Variable | Provider |
+| --- | --- |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub |
+| `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` | Microsoft (Azure AD) |
+| `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` | Discord |
+| `APPLE_CLIENT_ID` / `APPLE_TEAM_ID` / `APPLE_KEY_ID` / `APPLE_PRIVATE_KEY` | Sign in with Apple |

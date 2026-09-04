@@ -1,0 +1,33 @@
+---
+title: Session policy
+description: Sliding-window refresh tokens and concurrent session limits.
+---
+
+`auth-policy.json` at the project root controls the refresh token
+architecture, including how many devices a user may be signed in on at once.
+
+Limits are set **per surface**, because the right number differs between them:
+
+| Surface | Typical use |
+| --- | --- |
+| `tenantWeb` | Browser sessions for tenant users |
+| `tenantMobile` | Mobile app sessions |
+| `root` | Platform administrator sessions |
+
+## Eviction
+
+When a user exceeds the configured limit, the **oldest active session is
+evicted** rather than the new login being refused:
+
+```
+Refresh request from device #3
+  → check max sessions (limit: 2)
+  → limit exceeded
+  → evict oldest active session (device #1)
+  → issue new access + refresh tokens
+```
+
+The trade-off is deliberate. Refusing the new login is more secure in the
+strictest reading, but it strands a user who has lost a device with no way
+back in. Evicting the oldest keeps the limit meaningful while leaving the
+person in front of you able to work.

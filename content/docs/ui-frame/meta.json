@@ -1,0 +1,5 @@
+{
+  "title": "UI Frame",
+  "description": "The admin layer",
+  "pages": ["index", "setup", "multi-tenancy", "generators"]
+}

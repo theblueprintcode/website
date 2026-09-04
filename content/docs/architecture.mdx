@@ -1,0 +1,50 @@
+---
+title: Architecture
+description: How tenant isolation, request context and the layers fit together.
+---
+
+## Isolation model
+
+Tenant data is separated at the **PostgreSQL schema level**, not by a tenant
+column on every table.
+
+| Schema | Holds |
+| --- | --- |
+| `root` | Accounts, root users, system settings, global subscriptions |
+| `tenant_<accountId>` | That company's users, roles, locations and operational data |
+
+The practical consequence: cross-tenant leakage is a structural impossibility
+rather than a `WHERE` clause someone has to remember. A query in a tenant
+schema cannot see another tenant's rows, because those rows are not in scope.
+
+The cost of this model is real and worth stating: schema-per-tenant means
+migrations run per schema, and connection pooling has to be per schema too.
+The Engine handles both, but they are not free — see
+[Connection pooling](/docs/engine/setup#connection-pooling).
+
+## Request lifecycle
+
+Tenant context is resolved once per request and propagated through the entire
+call stack using Node's `AsyncLocalStorage`, via `TenantContextService`.
+
+```
+Client request
+  → Fastify / NestJS API
+  → TenantContextService resolves scope from the JWT
+  → root request      → root schema
+  → tenant request    → tenant_<accountId> schema
+```
+
+Because the context travels in `AsyncLocalStorage`, services deeper in the
+stack do not need a tenant argument threaded through every signature. They ask
+for the current context and get the right schema.
+
+## How the layers connect
+
+UI Frame talks to Engine over REST with a JWT. The token carries the tenant
+scope, so every subsequent call inherits it automatically — the frontend never
+passes a tenant id by hand after login.
+
+At login a user supplies an `accountId`, or `__root__` for platform
+administrators. That choice determines which schema the session is bound to
+and which actions the UI renders.

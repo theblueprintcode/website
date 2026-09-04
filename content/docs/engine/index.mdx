@@ -1,0 +1,56 @@
+---
+title: Engine
+description: The backend layer — NestJS on Fastify, PostgreSQL schema-per-tenant, Drizzle ORM.
+---
+
+Engine is the API and tenant layer. It is a configuration-driven multi-tenant
+backend: clone it, fill in `.env`, define your JSON policies, and you have a
+production-shaped SaaS backend.
+
+## The stack, and why
+
+| Choice | Over | Reason |
+| --- | --- | --- |
+| Fastify | Express | Throughput — see below |
+| Drizzle ORM | Prisma / TypeORM | Thin layer over SQL, no separate query engine |
+| PostgreSQL schemas | Tenant-id columns | Isolation enforced by the database |
+| NestJS | Bare Node | Module boundaries a team can share |
+
+### Throughput
+
+These are the Engine's own benchmark figures, measured on the combined stack
+rather than the framework alone:
+
+| Stack | Requests / second |
+| --- | --- |
+| Express + TypeORM | 12,000 |
+| Express + Prisma | 18,000 |
+| **Fastify + Drizzle ORM** | **65,000** |
+
+Treat these as directional. They come from our benchmark, on our hardware,
+with our handlers — the honest use for them is comparing the three
+combinations against each other, not predicting your production numbers.
+
+For framework-level figures measured by someone other than us, Fastify
+publishes its own comparison at
+[fastify.dev/benchmarks](https://fastify.dev/benchmarks/), which it labels an
+illustrative comparison.
+
+## Strict by default
+
+Engine has no hardcoded fallbacks. Required configuration that is missing
+fails the boot, validated by Joi at startup in
+`src/config/validation.schema.ts`.
+
+This is deliberate: you find out about a missing `JWT_ACCESS_SECRET` when the
+process refuses to start, not from a 500 in production three hours later.
+
+## What is built, and what is not
+
+Built and working: JWT auth, five SSO providers, module-based RBAC, tenant
+provisioning, sliding-window refresh sessions, transactional email, queues on
+Redis, local file storage.
+
+Interfaces exist but adapters do not: billing (Stripe, Zoho, Razorpay) and
+cloud storage (S3, GCS). Storage falls back to a working
+`LocalStorageAdapter`. See [Contributing](/docs/engine/contributing).

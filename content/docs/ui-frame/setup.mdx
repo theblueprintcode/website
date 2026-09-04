@@ -1,0 +1,38 @@
+---
+title: Setup
+description: Running the dashboard against your Engine.
+---
+
+## Prerequisites
+
+- [Bun](https://bun.sh/) (recommended) or Node.js v20+
+- The Engine backend running on `http://localhost:5201`
+
+The Engine must be up for API calls to succeed. UI Frame will render without
+it, but every data view will error.
+
+## Install
+
+```bash
+cd uiframe
+bun install
+```
+
+## Configure
+
+Create `.env.local` in the `uiframe` directory. The one required value points
+the dashboard at your backend:
+
+```bash
+# Point to your local Engine instance
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5201/api/v1
+```
+
+## Run
+
+```bash
+bun run dev
+```
+
+The dev server runs on port **5200** by default, chosen to avoid colliding
+with the backend. Open [http://localhost:5200](http://localhost:5200).

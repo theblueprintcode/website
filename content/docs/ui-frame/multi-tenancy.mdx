@@ -1,0 +1,27 @@
+---
+title: Multi-tenancy
+description: How the frontend inherits tenant scope.
+---
+
+UI Frame matches the Engine's tenant model out of the box.
+
+## Login
+
+Users supply an `accountId` at login — or `__root__` if they are a platform
+administrator. This is what binds the session to a schema.
+
+## Session
+
+The JWT the Engine returns carries the tenant scope. Every subsequent API call
+inherits it automatically; the frontend does not pass a tenant id by hand
+after login.
+
+This means tenant scoping is not something individual pages can get wrong.
+There is no per-request tenant parameter for a developer to forget, because
+the scope lives in the token.
+
+## Rendering
+
+The UI conditionally renders tenant-specific actions against platform-wide
+ones, based on the user's role and account scope. A tenant admin and a root
+administrator see different navigation from the same components.

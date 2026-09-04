@@ -1,0 +1,40 @@
+---
+title: RBAC
+description: Module-based permissions, configured in JSON.
+---
+
+Permissions group by **module** — `view_billing`, `manage_users` — rather than
+a flat list of generic permission strings. A new feature ships with its own
+access rules instead of a migration to backfill them.
+
+The whole system is controlled by two JSON files at the project root, so
+changing a role is a config edit, not a code change.
+
+## `rbac-root.json`
+
+Roles and module permissions for **system administrators managing the
+platform** — for example `Super Admin`.
+
+## `rbac-tenant.json`
+
+The default blueprint of roles for users operating **inside a tenant
+account** — for example `Admin` and `Mobile`.
+
+```json
+{
+  "roles": {
+    "Admin": {
+      "billing": ["view", "manage"],
+      "users": ["view", "manage"]
+    },
+    "Mobile": {
+      "billing": ["view"],
+      "users": ["view"]
+    }
+  }
+}
+```
+
+This file is a *blueprint*: it defines the roles a newly provisioned tenant
+starts with. Tenants can then define their own custom roles on top, stored in
+their own schema's `roles` table.

@@ -1,0 +1,41 @@
+---
+title: Generators
+description: CLI tools that scaffold forms from JSON.
+---
+
+## Dynamic form generator
+
+Generates a full Zod validation schema and a wired `react-hook-form`
+component from JSON metadata.
+
+Define the entity:
+
+```json
+{
+  "entityName": "Product",
+  "fields": [
+    { "name": "title", "type": "string", "required": true, "ui": "input" },
+    { "name": "price", "type": "number", "ui": "number-input" }
+  ]
+}
+```
+
+Run the generator:
+
+```bash
+bun run generate:form --schema=schema.json
+```
+
+The output — a React component and its schema — lands in
+`src/components/forms/`.
+
+Generated code is yours to edit. It is a starting point written into your
+repository, not a runtime abstraction that regenerates over your changes.
+
+## Other scripts
+
+| Command | Does |
+| --- | --- |
+| `bun run generate:presets` | Regenerate theme presets |
+| `bun run setup:theme` | Interactive theme setup |
+| `bun run check` | Biome lint and format check |
